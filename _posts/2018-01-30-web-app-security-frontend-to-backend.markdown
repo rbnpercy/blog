@@ -21,16 +21,23 @@ tags:
 - csrf
 - xss
 related:
+- introducing-the-auth0-security-whitepaper
+- for-the-best-security-think-beyond-webhooks
+- cybersecurity-requirements-for-new-york-financial-services-companies
 ---
 
 **TL;DR:**  Web Application Security is not just a consideration for Back end Developers, but for Front end Developers too.  In this article we'll cover a comprehensive security strategy for Web Apps, from Front to Back end.
 
 
-{% include tweet_quote.html quote_text="quotable tweet text.." %}
-
 ## Introduction
 
-I'm giving a talk on this and want to write up my thoughts... 
+One of the broadest, most important, yet often ignored considerations when deploying and running web applications is the security of the app.  When I use the term _security_, I mean from not only a Back end perspective, but also the Front end of the application.  Having good infrastructure security is highly important, but there are also security factors on the front end of the application that we really _must_ take into account.
+
+Security is an ongoing, and ever-changing, practice that you must observe to ensure that your product is never included in the companies that one hears about on the news after a huge data breach. Regardless of which programming paradigm, language or framework you wish to use, there are plenty of non-specific, terse security practices you should follow from the very start of the project.
+
+In my personal previous Startup, we provided User Authentication as a Service (direct competition to Auth0), so we were a major target for hackers. On one of our first evenings live, we watched someone attempt to send 5million malicious requests within 30 minutes. None of which had any affect other than exposing the hacker. This is because we made security a priority — which is something we all need to do in the modern world of Tech.
+
+In this article I'll introduce you to my biggest tips for top to bottom (Front end to Back end) security for your web applications.
 
 
 ## Strict Transport Security (HSTS)
@@ -68,7 +75,9 @@ If you are going to use the HSTS protocol, start out with a small `max-age` - so
 
 ## Using the X-XSS-Protection Header
 
-As I mentioned in my last article, XSS (Cross Site Scripting) is the most common of all Web App attacks.  XSS occurs when a malicious entity injects scripts to be run, into your Web App.  A few years back, most web browsers added a security filter for XSS attacks built into the browser itself.  Now whilst in theory this was a good step, they did tend to throw-up false-positives quite often.  Due to this, the filter can be turned off by the User. (As the option should be available, in my opinion.)
+{% include tweet_quote.html quote_text="XSS (Cross Site Scripting) is the most common of all Web App attacks.  XSS occurs when a malicious entity injects scripts to be run into your Web App." %}
+
+XSS (Cross Site Scripting) is the most common of all Web App attacks.  XSS occurs when a malicious entity injects scripts to be run into your Web App.  A few years back, most web browsers added a security filter for XSS attacks built into the browser itself.  Now whilst in theory this was a good step, they did tend to throw-up false-positives quite often.  Due to this, the filter can be turned off by the User. (As the option should be available, in my opinion.)
 
 To ensure our Users are protected, we can force this filter (worth it), on our Web App by using the `X-XSS-Protection` Header.  This Header is widely supported by common browsers, and something I'd recommend using every time.
 
@@ -105,6 +114,8 @@ function requestHandler(req, res) {
 
 
 ## Content Security Policy (CSP)
+
+{% include tweet_quote.html quote_text="Content Security Policies tell the browser what content is authorised to execute on a Web App, and what will block." %}
 
 CSP is another major topic when it comes to Server-Browser security for Web Apps.  At a high-level; Content Security Policies tell the browser what content is authorised to execute on a Web App, and what will block.  Primarily, this can be used to prevent XSS, in which an attacker could place a `<script>` tag on your Web App.  The Content-Security-Policy is a Server-Browser header that we can set to ensure our Server tells the Browser exactly which media, scripts, and their origins, we will allow to be executed on our Web app.
 
@@ -167,7 +178,7 @@ In doing this, I've just sent a Tweet on your account, without ever having to kn
 
 Perhaps a better way to relay this back to your own Web App would be to use the scenario in which like most of us, you probably have a route setup for your own Users to alter their User Profile.  `/user/profile` is probably the most common example, and given that most bad agents know this, it would be easy for them to send a POST request to your Web App, updating the User's Profile with a new email address.
 
-Now, while this may not seem like an obvious problem, once the User's email address is changed, the bad agent could then issue a password reset for that User account, and of course, the new password would be sent to the new email address, which is in the hands of the bad agent.  At this point, the User account is completely comprimised and if it contains or has access to sensitive data, that is now in the hands of the bad agent too.  Scary stuff.
+Now, while this may not seem like an obvious problem, once the User's email address is changed, the bad agent could then issue a password reset for that User account, and of course, the new password would be sent to the new email address, which is in the hands of the bad agent.  At this point, the User account is completely compromised and if it contains or has access to sensitive data, that is now in the hands of the bad agent too.  Scary stuff.
 
 For years, we have been trying to solve CSRF requests by checking HTTP headers such as the `Origin` and `Referer`.  Whilst these have offered fairly robust protection for a few years, there is now a simple directive that once applied; will entirely mitigate CSRF attacks.
 
@@ -235,13 +246,30 @@ Do you know the ins-and-outs of each library your Developers use?  Probably not 
 
 The issue here is that using so much *automation* in modern development, we grant access to a huge amount of tools/libraries without *really* knowing exactly what they're doing.  We take it for granted that each of these libraries is entirely safe and without their security vulnerabilities - or worse - performing malicious activities themselves.
 
-We all want the most streamlined Dev cycle possible.  We all use automation tools that trigger a whole bunch of processes, doings things that barely any of us are aware of.  The propensity of some Devs to throw `sudo` commands at package managers if a command fails is also terrifying.
+We all want the most streamlined Dev cycle possible.  We all use automation tools that trigger a whole bunch of processes, doings things that barely any of us are aware of.  The propensity of some Devs to throw `sudo` commands at package managers if a command fails is also truly terrifying.
 
 So how do we get around this?  ***Take a Tech Blueprint!***  This needn't be a complex process, it's as simple as knowing what each piece of Software is doing on your servers, and what authority they've been granted.  Take a note of any new tools / packages before you grant them permissions, and do a little research.  Some simple Googling of key phrases i.e. `*package* security vulnerabilities` will usually bring up more results than you'd expect.  It's also worth checking out the *Issues* tab on the package's GitHub page.  Vulnerabilities are often discussed there and you'll be able to act accordingly.  This applies to the top-level Package Managers too.
 
-Package managers are used by almost ALL of us.  If you really want to scare yourself, go ahead and search `*package manager* security vulnerability` and take a look at all of the results!  Again, knowing what we are installing and granting permissions to, and especially keeping a note of this, could just save our Bacon.  Take a look at [https://medium.com/friendship-dot-js/i-peeked-into-my-node-modules-directory-and-you-wont-believe-what-happened-next-b89f63d21558](this horror story.)
+Package managers are used by almost ALL of us.  If you really want to scare yourself, go ahead and search `*package manager* security vulnerability` and take a look at all of the results!  Again, knowing what we are installing and granting permissions to, and especially keeping a note of this, could just save our Bacon.  Take a look at [https://medium.com/friendship-dot-js/i-peeked-into-my-node-modules-directory-and-you-wont-believe-what-happened-next-b89f63d21558](this article for a relevant example!)
 
 **Handy tip:**  if you want to know which hooks an npm package runs, before you install it, run the command:
 
-  ` npm show $module scripts `
-  
+```bash
+  > npm show $module scripts
+```
+
+## Conclusion
+Without a doubt, the most effective method for maintaining the security of your web applications is keeping up-to-date with any security protocols on an ongoing basis.  Vulnerabilities are an extremely fickle and dynamic topic, in that they change / pop up so regularly.
+
+By following the tips in this article, keeping up-to-date with any security announcements, and having an in-depth overview of your systems, you can rest assured that you are well on your way to having a jolly well secured web app.  As stressed in this article, security considerations are not only found on the Back end of our apps, but on the Front end too.  Ensuring that we approach both means we can be confident about the safety of our users (which should be our number one priority).  The best tools in web security are common sense and vigilance.
+
+By utilising the methods and resources I have mentioned throughout this series, you would be in the top 90% for web app security. Many ignore security altogether, or simply make it a very-last priority. I hope that by offering practical, simple solutions and snippets in this article, we can all create a more secure environment for our web apps without too much developer effort.
+
+So, from enforcing HTTPS with Strict Transport Security, to securing our Web App with a Content Security Policy; we’ve covered the main topics, in my opinion to ensuring Front end to Back end security for our web applications. These topics are all techniques I utilise myself and would advocate for use in your apps on an ongoing basis.
+
+[ **_- @rbin_**](https://twitter.com/rbin) 
+
+
+## Aside:  User Security with Auth0
+
+TODO
