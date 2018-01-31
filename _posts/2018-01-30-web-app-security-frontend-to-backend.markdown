@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "Web Security - From Frontend to Backend"
-description: "Web Application Security is not just a consideration for Backend Developers, but for Frontend Developers too.  In this article we'll cover a comprehensive security strategy for Web Apps."
+title: "Web Security - From Front end to Back end"
+description: "Web Application Security is not just a consideration for Back end Developers, but for Front end Developers too.  In this article we'll cover a comprehensive security strategy for Web Applications."
 date: 2018-01-30 08:30
 category: Security
 author:
@@ -23,7 +23,7 @@ tags:
 related:
 ---
 
-**TL;DR:**  Web Application Security is not just a consideration for Backend Developers, but for Frontend Developers too.  In this article we'll cover a comprehensive security strategy for Web Apps, from Front to Backend.
+**TL;DR:**  Web Application Security is not just a consideration for Back end Developers, but for Front end Developers too.  In this article we'll cover a comprehensive security strategy for Web Apps, from Front to Back end.
 
 
 {% include tweet_quote.html quote_text="quotable tweet text.." %}
@@ -45,7 +45,7 @@ So, you're probably thinking "Wow! I need this!".  Well, whilst I agree - alongs
 
 *And in Node.js:*
 	
-``` js
+```js
 function requestHandler(req, res) {
 	res.setHeader('Strict-Transport-Security', 'max-age=630720; includeSubDomains; preload');
 }
@@ -74,7 +74,7 @@ To ensure our Users are protected, we can force this filter (worth it), on our W
 
 To apply this header to your Node.js app, you should include the following:
 
-``` js
+```js
 function requestHandler(req, res) {
 	res.setHeader( 'X-XSS-Protection', '1; mode=block' );
 }
@@ -86,7 +86,7 @@ If you're a security-freak like myself, and a user of the Chromium browser, you 
 
 	X-XSS-Protection: 1; report=<reporting-uri>
 
-Now, if the browser detects an XSS attack, the page will be sanitized, and a report the violation.  Note that this uses the functionality of the CSP `report-uri` directive to send a report that I will talk about in the Content Security Policy section below.
+Now, if the browser detects an XSS attack, the page will be sanitized, and report the violation.  Note that this uses the functionality of the CSP `report-uri` directive to send a report that I will talk about in the Content Security Policy section below.
 
 
 ## Defend against Clickjacking
@@ -97,7 +97,7 @@ Now, whilst this *could* be a very dangerous issue, it's very easy to mitigate, 
 
 If we choose `DENY`, we can block all framing.  If we use `ALLOW-FROM`, we can supply a list of domains to allow framing within.  I use the `SAMEORIGIN` directive, as this means framing can only be done within the current domain.  This can be utilised with the following:
 
-``` js
+```js
 function requestHandler(req, res) {
 	res.setHeader( 'X-Frame-Options', 'SAMEORIGIN' );
 }
@@ -112,7 +112,7 @@ The whitelisting of resource loading and execution URIs provides a good level of
 
 To include a Content Security Policy that allows only internal and *Google Analytics*, in an Express.js server, you could do the following:
 
-``` js
+```js
 var express = require('express');
 var app = express();
 
@@ -129,7 +129,7 @@ app.listen(process.env.PORT || 3000);
 
 However, if we do not wish to allow *any* external sites to execute scripts on our Web App, we could simply include the following:
 
-``` js
+```js
 function requestHandler(req, res) {
 	res.setHeader( 'Content-Security-Policy', "script-src 'self'" );
 }
@@ -148,18 +148,18 @@ Content Security Policies are both excellent and very powerful, but must be used
 
 Cross Site Request Forgery (CSRF) has been at the forefront of Web App Security for longer than any of us care to remember.  The idea behind it is that a malicious agent sends a (forged) request from one app to another whilst the User is signed in and authorised.  This would therefore allow the request to enter and alter restricted actions on the requested App, with the requested app believing entirely that the actions were coming from the logged in User.  A better way for me to describe this is to show you:
 
-Imagine if you will, I am security-abusing miscreant, and I happen to know that Twitter have no CSRF protection.  (They do, this is all hypothetical.)  I'm also aware that most people who visit *my* Web App, probably leave their Twitter logged in, and therefore have a Cookie stored in their browser, to allow them fast access to Twitter the next time they want to post something.
+Imagine if you will, I am security-abusing miscreant, and I happen to know that Twitter has no CSRF protection.  (They do, this is all hypothetical.)  I'm also aware that most people who visit *my* Web App, probably leave their Twitter logged in, and therefore have a Cookie stored in their browser, to allow them fast access to Twitter the next time they want to post something.
 
 On my Web App, I could embed a script such as the following:
 
-~~~ html
+~~~html
 <form action="https://twitter.com/tweet" method="POST" id="sendTweet">
 <input type="hidden" name="tweet" value="Hey!  Check out my awesome spam site - spam.com">
 ~~~
 
 When your browser loads my Web App, this form will be loaded (entirely invisibly) too.  I would then also have embedded a small piece of JS to POST the form, without you ever knowing:
 
-~~~ js
+~~~js
 document.getElementById("sendTweet").submit();
 ~~~
 
@@ -187,8 +187,7 @@ As we know, cookies are an important feature of our Web Applications, carrying d
 ***The `__Secure` prefix*** - If a cookie's name begins with "__Secure", the cookie MUST be:
 
 - Set with a "*Secure*" attribute
-- Set from a URI whose scheme is considered secure by the user
-       agent.
+- Set from a URI whose scheme is considered secure by the user agent.
 
 The following cookie would be rejected when set from any origin, as the "Secure" flag is not set:
 
@@ -236,11 +235,11 @@ Do you know the ins-and-outs of each library your Developers use?  Probably not 
 
 The issue here is that using so much *automation* in modern development, we grant access to a huge amount of tools/libraries without *really* knowing exactly what they're doing.  We take it for granted that each of these libraries is entirely safe and without their security vulnerabilities - or worse - performing malicious activities themselves.
 
-We all want the most streamlined Dev cycle possible.  We all use automation tools that trigger a whole bunch of process doings things that barely any of us are aware of.  The propensity of some Devs to throw `sudo` commands at package managers if a command fails is also terrifying.
+We all want the most streamlined Dev cycle possible.  We all use automation tools that trigger a whole bunch of processes, doings things that barely any of us are aware of.  The propensity of some Devs to throw `sudo` commands at package managers if a command fails is also terrifying.
 
-So how do we get around this?  ***Take a Tech Blueprint!***  This needn't be a complex process, it's as simple as knowing which pieces of Software do what on your servers, and how much authority you've granted them.  Take a note of any new tools / packages before you grant them permissions, and do a little research.  Some simple Googling of key phrases i.e. `*package* security vulnerabilities` will usually bring up more results than you'd expect.  It's also worth checking out the *Issues* tab on the package's GitHub page.  Vulnerabilities are often discussed there and you'll be able to act accordingly.  This applies to the top-level Package Managers too.
+So how do we get around this?  ***Take a Tech Blueprint!***  This needn't be a complex process, it's as simple as knowing what each piece of Software is doing on your servers, and what authority they've been granted.  Take a note of any new tools / packages before you grant them permissions, and do a little research.  Some simple Googling of key phrases i.e. `*package* security vulnerabilities` will usually bring up more results than you'd expect.  It's also worth checking out the *Issues* tab on the package's GitHub page.  Vulnerabilities are often discussed there and you'll be able to act accordingly.  This applies to the top-level Package Managers too.
 
-Package managers are used by almost ALL of us.  If you really want to scare yourself, go ahead and search `*package manager* security vulnerability` and take a look at all of the results!  Again, knowing what we are installing and granting permissions to, and especially keeping a note of this, could just save our Bacon.
+Package managers are used by almost ALL of us.  If you really want to scare yourself, go ahead and search `*package manager* security vulnerability` and take a look at all of the results!  Again, knowing what we are installing and granting permissions to, and especially keeping a note of this, could just save our Bacon.  Take a look at [https://medium.com/friendship-dot-js/i-peeked-into-my-node-modules-directory-and-you-wont-believe-what-happened-next-b89f63d21558](this horror story.)
 
 **Handy tip:**  if you want to know which hooks an npm package runs, before you install it, run the command:
 
