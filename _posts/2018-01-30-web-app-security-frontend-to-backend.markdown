@@ -270,6 +270,4 @@ So, from enforcing HTTPS with Strict Transport Security, to securing our Web App
 [ **_- @rbin_**](https://twitter.com/rbin) 
 
 
-## Aside:  User Security with Auth0
-
-TODO
+{% include asides/javascript-at-auth0.markdown %}
