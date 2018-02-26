@@ -10,8 +10,8 @@ author:
   mail: "robin.percy@auth0.com"
   avatar: "https://secure.gravatar.com/avatar/685342d5e7f42c3ab8d251d7d4a53308?s=100&d=mm&r=g"
 design:
-  bg_color: "#FFFFFF"
-  image: https://cdn.auth0.com/blog/image.jpg
+  bg_color: "#666363"
+  image: https://cdn.auth0.com/blog/web-app-security/logo.png
 tags:
 - web-security
 - security
